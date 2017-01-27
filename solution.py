@@ -176,14 +176,20 @@ def only_choice(values):
         # For Diagonal Sudoku not only search in units but also in diagonals
         box_units = units[box] + diagonal_units_search(box)
 
-        for b_square_units in box_units:
-             
-            b_square_values = set()
-            for p in b_square_units:
+        # Iterates over diferent box units: row, column, square and diagonals if it applies
+        for s_units in box_units:
+            
+            # Create a set with all values found in the boxes of the unit 
+            s_values = set()
+            
+            for p in s_units:
                 if not box == p:
-                    b_square_values = b_square_values | set(values[p])
+                    s_values = s_values | set(values[p])
 
-            choices = set(values[box]) - b_square_values
+            # Calculate the choices that the current box have         
+            choices = set(values[box]) - s_values
+
+            # If there is only one is an only_choice. Update it value
 
             if len(choices) == 1:
                 assign_value(new_values,box,choices.pop())
