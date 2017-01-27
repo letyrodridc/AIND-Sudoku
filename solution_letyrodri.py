@@ -1,7 +1,11 @@
 '''
     Udacity AIND
     Project 1: Solve a Sudoku with AI
-    by Leticia Rodriguez
+    by Leticia Rodriguez 
+
+    ADDITIONALS
+
+    THIS CODE DOENS'T SOLVE DIAGONAL SUDOKUS VARIANT
 '''
 from utils import *
 
@@ -103,47 +107,9 @@ def display(values):
     return
 
 #MY_SOLUTION
-def diagonal_peers(block):
-    """
-    Returns a set with diagonal peers of block (both diagonals)
-    Input: block - string 
-    Output: set of peers of block in the diagonal
-    """
-    res = set()
-
-    if block in diagonal_units:
-        res.union(set(diagonal_units))
-
-    if block in diagonal_units2:
-        res.union(set(diagonal_units2))
-
-    if res:
-        res.remove(block)
-
-    return res
-
-#MY_SOLUTION
-def diagonal_units_search(block):
-    """
-    Returns a list of list that are diagonal_units if the block belongs to any of these
-    Input: block
-    Output: list of diagonal_units lists
-    """
-    res = list()
-
-    if block in diagonal_units:
-        res.append(list(diagonal_units))
-
-    if block in diagonal_units2:
-        res.append(list(diagonal_units2))
-
-    return res  
-
-#MY_SOLUTION
 def eliminate(values):
     """
     Returns a dictionary with elimination technique applied.
-    Solution for Diagonal Sudoku. It also eliminates the value from diagonals.
     Input: values - The sudoku in dictionary form
     Output: dict - copy of values with elimination technique applied
     """
@@ -155,8 +121,7 @@ def eliminate(values):
 
         if len(block_value) == 1:
 
-            # Changed for Diagonal Sudoku. Searchs also in the peers in both diagonal.
-            for p in peers[block].union(diagonal_peers(block)):
+            for p in peers[block]:
                 assign_value(res, p, res[p].replace(block_value, ''))
 
     return res
@@ -165,7 +130,6 @@ def eliminate(values):
 def only_choice(values):
     """
     Returns a dictionary with Only Choice technique applied.
-    Solution for Diagonal Sudoku. It also verify the values in diagonals.
     Input: values - The sudoku in dictionary form
     Output: dict - copy of values with Only Choice applied
     """
@@ -173,8 +137,7 @@ def only_choice(values):
     boxes = [box for box in values.keys() if len(values[box]) > 1]
 
     for box in boxes:
-        # For Diagonal Sudoku not only search in units but also in diagonals
-        box_units = units[box] + diagonal_units_search(box)
+        box_units = units[box] 
 
         for b_square_units in box_units:
              
@@ -192,11 +155,6 @@ def only_choice(values):
 
 #MY_SOLUTION
 def reduce_puzzle(values):
-    """
-    Applies elimination and only choice techiniques until no more changes could be made
-    Input: values - The sudoku in dictionary form
-    Output: values (dict updated)
-    """
     stalled = False
     while not stalled:
         # Check how many boxes have a determined value
@@ -221,24 +179,28 @@ def reduce_puzzle(values):
     return values
 
 #MY_SOLUTION - DFS
+
 def search(values):
     """
-    Solves a Sudoku problem in variant Diagonal Sudoku.
+    Solves a Sudoku
     Input: values - The sudoku in dictionary form
     Output: values - Sudoku solved
     """
+    # First, reduce the puzzle using the previous function
 
     values = reduce_puzzle(values)
 
     # Verify if could't solved it and there is no solution for that instance
     # See reduce_puzzle
     not_solved = values is False
+
     if not_solved:
         return None
 
-    # Checks if all the boxes has one value --- so, solved true    
+    # Checks if all the boxes has one value --- so, solved true 
     solved = len([b for b in boxes if len(values[b]) == 1]) == len(boxes)
 
+  
     if solved:
         return values
 
@@ -266,7 +228,7 @@ def search(values):
             values[selected] = old_value
 
         return s
-    
+
 #MY_SOLUTION
 def solve(grid):
     """
@@ -288,8 +250,8 @@ def solve(grid):
 
 
 if __name__ == '__main__':
-    diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
-    display(solve(diag_sudoku_grid))
+    sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
+    display(solve(sudoku_grid))
 
     try:
         from visualize import visualize_assignments

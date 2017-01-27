@@ -3,11 +3,18 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: *Student should provide answer here*
+A: To solve a Sudoku, we need to narrow the possible values in each box. Using the Naked Twins technique, we can change the values of a row, a column or/and square, where the twins belongs, eliminating the "naked twin" values in those other boxes.
+Because the twins has two values and are two boxes, we can assume that to satisfy Sudoku rules, one of each has to have one of the two possible values. So, it is not possible that other box in the same column, row or/and square has that value. So, that's why it's eliminated from the rest of boxes in column, row or/and square.
+We apply a constraint to reduce the search space in future iterations.
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: *Student should provide answer here*
+A: The Diagonal Sudoku doesn't allows two identical values in the diagonals.
+Similar as we did with column, row and square, we can apply elimination on the diagonals. If exists a box with an only value in the diagonal, we already know that in the rest of the diagonal boxes that value is not a valid option.
+Eliminating those values from diagonal boxes will narrow down the search space in future interactions.
+Also, we can do similar approach in Only Choice technique.
+We know that the nine values should be on each diagonal, if there is a value that only appears as an option in a unique box in the diagonal, we can conclude that's the box value.
+  
 
 ### Install
 
