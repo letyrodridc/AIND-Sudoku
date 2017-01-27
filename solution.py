@@ -11,12 +11,15 @@ row_units = [cross(r, cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
 square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
 
-diagonal_units = [r+c for r,c in list(zip(rows,cols))]
-diagonal_units2 = [r+c for r,c in list(zip(rows[::-1],cols))]
 unitlist = row_units + column_units + square_units 
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 
+# Contains a list of boxes in the Sudoku Diagona from left to right
+diagonal_units = [r+c for r,c in list(zip(rows,cols))]
+
+# Contains a list of boxes in the Sudoku Diagona from right to left
+diagonal_units2 = [r+c for r,c in list(zip(rows[::-1],cols))]
 
 
 assignments = []
@@ -24,7 +27,6 @@ assignments = []
 
 def assign_value(values, box, value):
     """
-    Please use this function to update your values dictionary!
     Assigns a value to a given box. If it updates the board record it.
     """
     values[box] = value
@@ -42,11 +44,32 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
-
     # Find all instances of naked twins
-    # Eliminate the naked twins as possibilities for their peers
-    pass
 
+    all_twins = list()
+    
+    # Are twins! I need 2 values, if > or < I avoid iteration
+    boxes_to_search = [box for box in boxes if len(values[box]) == 2]
+    
+    while boxes_to_search:
+        box = boxes_to_search.pop()
+        value = values[box]
+        
+        for p in peers[box]:
+            if p in boxes_to_search and values[p] == value:
+                all_twins.append( (box,p) )
+
+
+    # Eliminate the naked twins as possibilities for their peers
+    for box, twin in all_twins:
+        value = values[box]
+
+        for p in peers[box].intersection(peers[twin]):
+            if not values[p] == value:
+                for c in value:
+                    values[p] = values[p].replace(c, '')
+
+    return values
 
 def grid_values(grid):
     """
@@ -121,18 +144,6 @@ def eliminate(values):
 
     return res
     
-    '''
-    res = dict(values)
-    
-    for block in values.keys():
-        block_value = values[block]
-        
-        if len(block_value) == 1:
-            for p in peers[block]:
-                res[p] = res[p].replace(block_value,'')
-
-    return res
-    '''
 
 def only_choice(values):
     """
@@ -244,7 +255,6 @@ def solve(grid):
 
 if __name__ == '__main__':
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
-    
     display(solve(diag_sudoku_grid))
     
 
