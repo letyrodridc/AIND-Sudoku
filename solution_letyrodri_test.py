@@ -45,6 +45,7 @@ class Test95Sudokus(unittest.TestCase):
         self._readfile(self.filename_sudoku_solutions, self.solved_sudoku)
         
         for i,g in enumerate(self.grid[0:10]):
+            print(i)
             self.assertEqual(solution_letyrodri.solve(g), solution_letyrodri.grid_values(self.solved_sudoku[i]))        
 
 def auxiliar_process():
